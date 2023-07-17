@@ -1,10 +1,16 @@
+import { Outlet } from "react-router-dom"
 import Navbar from "../components/Shared/Navbar/Navbar"
+import Home from "../pages/Home/Home"
 
 const Main = () => {
   return (
-    <div>
+    <>
       <Navbar></Navbar>
-    </div>
+      <div className="pt-28 pb-20">
+        <Outlet></Outlet>
+      </div>
+
+    </>
   )
 }
 
