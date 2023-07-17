@@ -1,75 +1,76 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import toast from "react-hot-toast"
 import { FcGoogle } from 'react-icons/fc'
-import {TbFidgetSpinner} from 'react-icons/tb'
+import { TbFidgetSpinner } from 'react-icons/tb'
 import { useContext, useRef } from 'react'
-import { AuthContext } from '../../../providers/AuthProvider'
+import { AuthContext } from '../../providers/AuthProvider'
 
 const Login = () => {
-    const {
-        loading,
-        setLoading,
-        signIn,
-        signInWithGoogle,
-        resetPassword,
-      } = useContext(AuthContext)
+  const {
+    loading,
+    setLoading,
+    signIn,
+    signInWithGoogle,
+    resetPassword,
+  } = useContext(AuthContext);
 
-      const navigate = useNavigate();
-      const location = useLocation();
-      const from = location.state?.from?.pathname || '/';
-      const emailRef = useRef();
-
-
-    //   handle sign in with email password
-    const handleSignIn = event =>{
-        event.preventDefault()
-        const email = event.target.email.value;
-        const password = event.target.password.value;
-        console.log(email, password);
-        signIn(email, password)
-        .then(result => {
-            const loggedUser = result.user;
-            console.log(loggedUser)
-            navigate(from, {replace: true})
-        })
-        .catch(err => {
-            console.log(err.message)
-            setLoading(false)
-            toast.error(err.message)
-        })
-    }
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || '/';
+  const emailRef = useRef();
 
 
-    //   handle google sign in 
-    const handleGoogleSignIn = () => {
-        signInWithGoogle()
-        .then(result => {
-            const loggedUser = result.user;
-            console.log(loggedUser)
-            navigate(from, {replace: true})
-        })
-        .catch(err => {
-            console.log(err.message)
-            setLoading(false)
-            toast.error(err.message)
-        })
-    }
+  //   handle sign in with email password
+  const handleSignIn = event => {
+    event.preventDefault()
+    const email = event.target.email.value;
+    const password = event.target.password.value;
+    console.log(email, password);
+    signIn(email, password)
+      .then(result => {
+        const loggedUser = result.user;
+        console.log(loggedUser)
+        toast.success('Successfully Login')
+        navigate(from, { replace: true })
+      })
+      .catch(err => {
+        console.log(err.message)
+        setLoading(false)
+        toast.error(err.message)
+      })
+  }
 
-    // handle reset password
-    const handleResetPassword = () => {
-      const email = emailRef.current.value;
-       console.log(email)
-      resetPassword(email)
+
+  //   handle google sign in 
+  const handleGoogleSignIn = () => {
+    signInWithGoogle()
+      .then(result => {
+        const loggedUser = result.user;
+        console.log(loggedUser)
+        navigate(from, { replace: true })
+      })
+      .catch(err => {
+        console.log(err.message)
+        setLoading(false)
+        toast.error(err.message)
+      })
+  }
+
+  // handle reset password
+  const handleResetPassword = () => {
+    const email = emailRef.current.value;
+    console.log(email)
+    resetPassword(email)
       .then(() => {
-            setLoading(false);
-            toast.success('Check your email to reset password')
-        })
-        .catch(err => {
-            console.log(err.message)
-            setLoading(false)
-            toast.error(err.message)
-        })
-    }
+        setLoading(false);
+        toast.success('Check your email to reset password')
+      })
+      .catch(err => {
+        console.log(err.message)
+        setLoading(false)
+        toast.error(err.message)
+      })
+  }
 
 
   return (
@@ -93,6 +94,7 @@ const Login = () => {
                 Email address
               </label>
               <input
+                ref={emailRef}
                 type='email'
                 name='email'
                 id='email'
@@ -109,7 +111,6 @@ const Login = () => {
                 </label>
               </div>
               <input
-                ref={emailRef}
                 type='password'
                 name='password'
                 id='password'
@@ -125,7 +126,7 @@ const Login = () => {
               type='submit'
               className='bg-rose-500 w-full rounded-md py-3 text-white'
             >
-              {loading ? <TbFidgetSpinner size={26} className='mx-auto animate-spin'/> : 'Continue'}
+              {loading ? <TbFidgetSpinner size={26} className='mx-auto animate-spin' /> : 'Continue'}
             </button>
           </div>
         </form>
