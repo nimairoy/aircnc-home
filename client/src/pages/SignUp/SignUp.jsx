@@ -4,6 +4,7 @@ import { FcGoogle } from 'react-icons/fc'
 import { TbFidgetSpinner } from 'react-icons/tb'
 import { useContext, useRef } from 'react'
 import { AuthContext } from '../../providers/AuthProvider'
+import { saveUser } from '../../api/auth'
 
 const SignUp = () => {
 
@@ -39,25 +40,24 @@ const SignUp = () => {
         })
             .then(res => res.json())
             .then(data => {
-               const photo_url = data.data.display_url;
+                const photo_url = data.data.display_url;
                 // create user with sign up method 
                 createUser(email, password)
-                .then(result => {
-                    const loggedUser = result.user;
-                    console.log(loggedUser)
-                    toast.success("Successfully Sign Up")
-                    // update user profile 
-                    updateUserProfile(name, photo_url)
-                    .then(() => {
-                       //updated
-                        navigate(from, { replace: true })
+                    .then(result => {
+                        // update user profile 
+                        updateUserProfile(name, photo_url)
+                            .then(() => {
+                                //save user into database
+                                saveUser(result.user)
+                                toast.success("Successfully Sign Up")
+                                navigate(from, { replace: true })
+                            })
+                            .catch(err => {
+                                console.log(err.message)
+                                setLoading(false)
+                                toast.error(err.message)
+                            })
                     })
-                    .catch(err => {
-                        console.log(err.message)
-                        setLoading(false)
-                        toast.error(err.message)
-                    })
-                })
                     .catch(err => {
                         console.log(err.message)
                         setLoading(false)
@@ -78,8 +78,8 @@ const SignUp = () => {
     const handleGoogleSignIn = () => {
         signInWithGoogle()
             .then(result => {
-                const loggedUser = result.user;
-                console.log(loggedUser)
+                //save user into database
+                saveUser(result.user)
                 navigate(from, { replace: true })
             })
             .catch(err => {
