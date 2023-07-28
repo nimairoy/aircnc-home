@@ -7,6 +7,7 @@ import RoomDetails from '../pages/RoomDetails/RoomDetails'
 import PrivateRoute from './PrivateRoute'
 import DashboardLayout from '../layouts/DashboardLayout'
 import AddRoom from '../pages/Dashboard/AddRoom'
+import { getOneRoom } from '../api/rooms'
 
 export const router = createBrowserRouter([
   {
@@ -18,13 +19,14 @@ export const router = createBrowserRouter([
         element: <Home />
       },
       {
-        path: '/rooms/:id',
-        element: <PrivateRoute><RoomDetails /></PrivateRoute>
+        path: '/room/:id',
+        element: <PrivateRoute><RoomDetails /></PrivateRoute>,
+        loader: ({ params }) => getOneRoom(params.id)
       }
     ]
   },
-  { path: '/login', element: <Login />  },
-  { path: '/signup', element: <SignUp />  },
+  { path: '/login', element: <Login /> },
+  { path: '/signup', element: <SignUp /> },
   {
     path: '/dashboard',
     element: <DashboardLayout></DashboardLayout>,
